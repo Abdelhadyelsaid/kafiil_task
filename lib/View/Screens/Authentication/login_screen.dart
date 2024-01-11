@@ -6,7 +6,7 @@ import 'package:kafiil_hiring_app/Const/constants.dart';
 import 'package:kafiil_hiring_app/Controller/API_Controller/Authentication/authentication_cubit.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
 import 'package:kafiil_hiring_app/View/Screens/layout_screen.dart';
-import 'package:kafiil_hiring_app/View/Screens/register_screen.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/register_screen.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_button.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_form_field.dart';
 

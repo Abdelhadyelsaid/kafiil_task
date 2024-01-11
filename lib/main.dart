@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
-import 'package:kafiil_hiring_app/View/Screens/CompleteDataScreen.dart';
-import 'package:kafiil_hiring_app/View/Screens/login_screen.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/login_screen.dart';
+import 'package:kafiil_hiring_app/View/Screens/profile_screen.dart';
 import 'package:kafiil_hiring_app/helper/cache_helper.dart';
 import 'package:kafiil_hiring_app/helper/dio_helper.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
                       useMaterial3: true,
                     ),
                     debugShowCheckedModeBanner: false,
-                    home: const LoginScreen()),
+                    home: const ProfileScreen()),
           );
         },
       ),

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kafiil_hiring_app/Const/constants.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
-import 'package:kafiil_hiring_app/View/Screens/CompleteDataScreen.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_button.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_form_field.dart';
 
