@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kafiil_hiring_app/Const/Api_url.dart';
+import 'package:kafiil_hiring_app/Controller/API_Controller/Home/home_cubit.dart';
 import 'package:kafiil_hiring_app/Model/login_model.dart';
 import 'package:kafiil_hiring_app/helper/cache_helper.dart';
 import 'package:kafiil_hiring_app/helper/dio_helper.dart';
@@ -53,4 +54,5 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       print(e.toString());
     });
   }
+
 }
