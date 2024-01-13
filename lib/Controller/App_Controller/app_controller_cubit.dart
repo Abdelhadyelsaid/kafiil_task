@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/countriess_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/Authentication/login_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/profile_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/services_screen.dart';
@@ -18,7 +19,7 @@ class AppControllerCubit extends Cubit<AppControllerState> {
   bool showConfirmPassword = true;
   bool rememberMe = false;
   bool validate = false;
-  String userType = 'Seller';
+  int userType = 1;
   String gender = 'Male';
   bool facebook = false;
   bool linkedIn = false;
@@ -46,7 +47,7 @@ class AppControllerCubit extends Cubit<AppControllerState> {
   int currentIndex = 0;
   List<Widget> bottomScreens = const [
     ProfileScreen(),
-    CompleteDataScreen(),
+    CountriesScreen(),
     ServicesScreen(),
 
   ];

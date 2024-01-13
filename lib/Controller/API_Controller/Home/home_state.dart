@@ -5,12 +5,7 @@ abstract class HomeState {}
 
 class HomeInitial extends HomeState {}
 
-///Profile
-class ProfileLoadingState extends HomeState {}
 
-class ProfileSuccessState extends HomeState {}
-
-class ProfileErrorState extends HomeState {}
 
 ///Service
 class ServiceLoadingState extends HomeState {}
@@ -25,3 +20,9 @@ class PopularLoadingState extends HomeState {}
 class PopularSuccessState extends HomeState {}
 
 class PopularErrorState extends HomeState {}
+///Country
+class CountryLoadingState extends HomeState {}
+
+class CountrySuccessState extends HomeState {}
+
+class CountryErrorState extends HomeState {}

@@ -1,6 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kafiil_hiring_app/Const/Api_url.dart';
+import 'package:kafiil_hiring_app/Model/countries_model.dart';
+import 'package:kafiil_hiring_app/Model/popular_services_model.dart';
+import 'package:kafiil_hiring_app/Model/services_model.dart';
 import 'package:kafiil_hiring_app/helper/dio_helper.dart';
 import 'package:meta/meta.dart';
 
@@ -11,27 +13,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   static HomeCubit get(context) => BlocProvider.of(context);
 
-  void getProfile({
-    Function()? onError,
-    Function()? onSuccess,
-  }) async {
-    emit(ProfileLoadingState());
-    DioHelper.getData(
-      url: ApiUrl.profile,
-    ).then((value) {
-      print(value.data);
-      if (value.statusCode == 200) {
-        print("get Profile success");
-        onSuccess!();
-      } else {
-        onError!();
-      }
-      emit(ProfileSuccessState());
-    }).catchError((e) {
-      emit(ProfileErrorState());
-      print(e.toString());
-    });
-  }
+  Services? services;
+
   void getService({
     Function()? onError,
     Function()? onSuccess,
@@ -42,6 +25,7 @@ class HomeCubit extends Cubit<HomeState> {
     ).then((value) {
       print(value.data);
       if (value.statusCode == 200) {
+        services = Services.fromJson(value.data);
         print("get service success");
         onSuccess!();
       } else {
@@ -53,6 +37,9 @@ class HomeCubit extends Cubit<HomeState> {
       print(e.toString());
     });
   }
+
+  PopularServices? popularServices;
+
   void getPopularService({
     Function()? onError,
     Function()? onSuccess,
@@ -63,6 +50,7 @@ class HomeCubit extends Cubit<HomeState> {
     ).then((value) {
       print(value.data);
       if (value.statusCode == 200) {
+        popularServices = PopularServices.fromJson(value.data);
         print("get popular service success");
         onSuccess!();
       } else {
@@ -71,6 +59,35 @@ class HomeCubit extends Cubit<HomeState> {
       emit(PopularSuccessState());
     }).catchError((e) {
       emit(PopularErrorState());
+      print(e.toString());
+    });
+  }
+
+  CountryModel? countryModel;
+   int pagenumber=1;
+  void getCountry({
+    Function()? onError,
+    Function()? onSuccess,
+   required int index,
+  }) async {
+    emit(CountryLoadingState());
+    DioHelper.getData(
+      url: ApiUrl.country,
+      query: {
+        "page":index
+      },
+    ).then((value) {
+      print(value.data);
+      if (value.statusCode == 200) {
+        countryModel = CountryModel.fromJson(value.data);
+        print("get country success");
+        onSuccess!();
+      } else {
+        onError!();
+      }
+      emit(CountrySuccessState());
+    }).catchError((e) {
+      emit(CountryErrorState());
       print(e.toString());
     });
   }

@@ -83,23 +83,40 @@ class CompleteDataScreen extends StatelessWidget {
                                       shape: BoxShape.circle,
                                     ),
                                     child: cubit.image != null
-                                        ? Card(
-                                            clipBehavior: Clip.antiAlias,
-                                            shape: CircleBorder(),
-                                            child: Image.file(
-                                              cubit.image!,
-                                              fit: BoxFit.contain,
-                                              width: 120.w,
-                                              height: 120.h,
+                                        ? Stack(children: [
+                                            Card(
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: CircleBorder(),
+                                              child: Image.file(
+                                                cubit.image!,
+                                                fit: BoxFit.cover,
+                                                width: 120.w,
+                                                height: 120.h,
+                                              ),
                                             ),
-                                          )
+                                            Positioned(
+                                              bottom: -4,
+                                              right: -4,
+                                              child: IconButton(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  onPressed: () {
+                                                    cubit.chooseImage();
+                                                  },
+                                                  icon: SvgPicture.asset(
+                                                    'assets/images/add_button.svg',
+                                                    height: 37,
+                                                    width: 37,
+                                                  )),
+                                            )
+                                          ])
                                         : Stack(children: [
                                             Card(
                                                 clipBehavior: Clip.antiAlias,
                                                 shape: CircleBorder(),
                                                 child: SvgPicture.asset(
-                                                  'assets/images/login.svg',
-                                                  fit: BoxFit.contain,
+                                                  'assets/images/user.svg',
+                                                  fit: BoxFit.fill,
                                                   width: 120.w,
                                                   height: 120.h,
                                                 )),
@@ -278,7 +295,6 @@ class CompleteDataScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: .05.sw),
                             child: const Row(

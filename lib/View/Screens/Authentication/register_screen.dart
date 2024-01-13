@@ -173,7 +173,7 @@ class RegisterScreen extends StatelessWidget {
                                   child: RadioListTile(
                                     title: const Text('Seller'),
                                     contentPadding: const EdgeInsets.all(0.0),
-                                    value: 'Seller',
+                                    value: 2,
                                     groupValue: appCubit.userType,
                                     onChanged: (value) {
                                       setState(() {
@@ -186,7 +186,7 @@ class RegisterScreen extends StatelessWidget {
                                   child: RadioListTile(
                                     contentPadding: const EdgeInsets.all(0.0),
                                     title: const Text('Buyer'),
-                                    value: 'Buyer',
+                                    value: 1,
                                     groupValue: appCubit.userType,
                                     onChanged: (value) {
                                       setState(() {
@@ -199,7 +199,7 @@ class RegisterScreen extends StatelessWidget {
                                   child: RadioListTile(
                                     contentPadding: const EdgeInsets.all(0.0),
                                     title: const Text('Both'),
-                                    value: 'Both',
+                                    value: 3,
                                     groupValue: appCubit.userType,
                                     onChanged: (value) {
                                       setState(() {
