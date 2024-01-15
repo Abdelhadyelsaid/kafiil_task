@@ -27,3 +27,10 @@ class ProfileLoadingState extends AuthenticationState {}
 class ProfileSuccessState extends AuthenticationState {}
 
 class ProfileErrorState extends AuthenticationState {}
+
+///Dependancies
+class DependanciesLoadingState extends AuthenticationState {}
+
+class DependanciesSuccessState extends AuthenticationState {}
+
+class DependanciesErrorState extends AuthenticationState {}

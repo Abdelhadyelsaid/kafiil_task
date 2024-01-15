@@ -24,7 +24,6 @@ class Data {
     required this.firstName,
     required this.lastName,
     required this.about,
-    required this.tags,
     required this.favoriteSocialMedia,
     required this.salary,
     required this.email,
@@ -37,7 +36,6 @@ class Data {
   late final String firstName;
   late final String lastName;
   late final String about;
-  late final List<Tags> tags;
   late final List<String> favoriteSocialMedia;
   late final int salary;
   late final String email;
@@ -51,7 +49,6 @@ class Data {
     firstName = json['first_name'];
     lastName = json['last_name'];
     about = json['about'];
-    tags = List.from(json['tags']).map((e)=>Tags.fromJson(e)).toList();
     favoriteSocialMedia = List.castFrom<dynamic, String>(json['favorite_social_media']);
     salary = json['salary'];
     email = json['email'];
@@ -62,19 +59,6 @@ class Data {
   }
 }
 
-class Tags {
-  Tags({
-    required this.id,
-    required this.name,
-  });
-  late final int id;
-  late final String name;
-
-  Tags.fromJson(Map<String, dynamic> json){
-    id = json['id'];
-    name = json['name'];
-  }
-}
 
 class Type {
   Type({

@@ -6,4 +6,5 @@ class ApiUrl {
   static const String services = "service";
   static const String popular = "service/popular";
   static const String country = "country";
+  static const String tags = "dependencies";
 }

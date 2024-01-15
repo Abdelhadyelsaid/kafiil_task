@@ -22,7 +22,7 @@ class AppControllerCubit extends Cubit<AppControllerState> {
   int userType = 1;
   String gender = 'Male';
   bool facebook = false;
-  bool linkedIn = false;
+  bool instagram = false;
   bool twitter = false;
 
   void switchPasswordVisibility() {

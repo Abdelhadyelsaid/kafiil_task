@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kafiil_hiring_app/Const/constants.dart';
 import 'package:kafiil_hiring_app/Controller/API_Controller/Authentication/authentication_cubit.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/login_screen.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_button.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_form_field.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class CompleteDataScreen extends StatelessWidget {
   const CompleteDataScreen({super.key});
@@ -17,7 +20,8 @@ class CompleteDataScreen extends StatelessWidget {
     var dateController = TextEditingController();
     var salaryController = TextEditingController();
     int salary = 100;
-
+    List<String> socialMedia = [];
+    List<dynamic> selectedTags = [];
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -42,13 +46,15 @@ class CompleteDataScreen extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => AppControllerCubit()),
-            BlocProvider(create: (context) => AuthenticationCubit()),
+            BlocProvider(
+                create: (context) => AuthenticationCubit()..getDependacncies()),
           ],
           child: BlocConsumer<AppControllerCubit, AppControllerState>(
             listener: (context, state) {},
             builder: (context, state) {
               var appCubit = AppControllerCubit.get(context);
               var cubit = AuthenticationCubit.get(context);
+
               return Column(
                 children: [
                   Form(
@@ -79,14 +85,14 @@ class CompleteDataScreen extends StatelessWidget {
                                   await cubit.chooseImage();
                                 },
                                 child: Container(
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                     ),
                                     child: cubit.image != null
                                         ? Stack(children: [
                                             Card(
                                               clipBehavior: Clip.antiAlias,
-                                              shape: CircleBorder(),
+                                              shape: const CircleBorder(),
                                               child: Image.file(
                                                 cubit.image!,
                                                 fit: BoxFit.cover,
@@ -113,7 +119,7 @@ class CompleteDataScreen extends StatelessWidget {
                                         : Stack(children: [
                                             Card(
                                                 clipBehavior: Clip.antiAlias,
-                                                shape: CircleBorder(),
+                                                shape: const CircleBorder(),
                                                 child: SvgPicture.asset(
                                                   'assets/images/user.svg',
                                                   fit: BoxFit.fill,
@@ -285,7 +291,8 @@ class CompleteDataScreen extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: .05.sw),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: .05.sw, vertical: .01.sh),
                             child: const Row(
                               children: [
                                 Text(
@@ -295,6 +302,56 @@ class CompleteDataScreen extends StatelessWidget {
                               ],
                             ),
                           ),
+                          BlocConsumer<AuthenticationCubit,
+                              AuthenticationState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              var getcubit = AuthenticationCubit.get(context);
+                              return getcubit.dependenciesModel == null
+                                  ? CircularProgressIndicator()
+                                  : Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: .05.sw),
+                                      child: StatefulBuilder(
+                                        builder: (context, setState) =>
+                                            Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                          ),
+                                          child: Column(
+                                            children: <Widget>[
+                                              MultiSelectBottomSheetField(
+                                                initialChildSize: 0.4,
+                                                listType:
+                                                    MultiSelectListType.CHIP,
+                                                searchable: true,
+                                                title: Text("Skills"),
+                                                items: getcubit.items,
+                                                onConfirm: (values) {
+                                                  selectedTags = values;
+                                                  print(
+                                                      "Selected tag values: ${selectedTags.map((tag) => tag.value).toList()}");
+                                                },
+                                                chipDisplay:
+                                                    MultiSelectChipDisplay(
+                                                  onTap: (value) {
+                                                    setState(() {
+                                                      selectedTags
+                                                          .remove(value);
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                            },
+                          ),
+                          SizedBox(height: 40),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: .05.sw),
                             child: const Row(
@@ -306,157 +363,192 @@ class CompleteDataScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          StatefulBuilder(
-                            builder: (context, setState) => Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: .06.sw, vertical: .01.sh),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            appCubit.facebook =
-                                                !appCubit.facebook;
-                                          });
-                                        },
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: Checkbox(
-                                                      value: appCubit.facebook,
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          appCubit.facebook =
-                                                              !appCubit
-                                                                  .facebook;
-                                                        });
-                                                      })),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10.0),
-                                                child: SvgPicture.asset(
-                                                    'assets/icons/facebook.svg'),
-                                              ),
-                                              Text(
-                                                'Facebook',
-                                                style:
-                                                    TextStyle(fontSize: 16.sp),
-                                              )
-                                            ]),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: .06.sw, vertical: .01.sh),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            appCubit.twitter =
-                                                !appCubit.twitter;
-                                          });
-                                        },
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: Checkbox(
-                                                      value: appCubit.twitter,
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          appCubit.twitter =
-                                                              !appCubit.twitter;
-                                                        });
-                                                      })),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10.0),
-                                                child: SvgPicture.asset(
-                                                    'assets/icons/twitter.svg'),
-                                              ),
-                                              Text(
-                                                'Twitter',
-                                                style:
-                                                    TextStyle(fontSize: 16.sp),
-                                              )
-                                            ]),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: .06.sw, vertical: .01.sh),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            appCubit.linkedIn =
-                                                !appCubit.linkedIn;
-                                          });
-                                        },
-                                        child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: Checkbox(
-                                                      value: appCubit.linkedIn,
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          appCubit.linkedIn =
-                                                              !appCubit
-                                                                  .linkedIn;
-                                                        });
-                                                      })),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10.0),
-                                                child: SvgPicture.asset(
-                                                  'assets/icons/LinkedIn_icon.svg',
-                                                  height: 21,
-                                                  width: 19,
+                          BlocConsumer<AuthenticationCubit,
+                              AuthenticationState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              var getcubit = AuthenticationCubit.get(context);
+                              return getcubit.dependenciesModel == null
+                                  ? CircularProgressIndicator()
+                                  : StatefulBuilder(
+                                      builder: (context, setState) => Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: .06.sw,
+                                                vertical: .01.sh),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      appCubit.facebook =
+                                                          !appCubit.facebook;
+                                                    });
+                                                  },
+                                                  child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: Checkbox(
+                                                                value: appCubit
+                                                                    .facebook,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    appCubit.facebook =
+                                                                        !appCubit
+                                                                            .facebook;
+                                                                  });
+                                                                })),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10.0),
+                                                          child: SvgPicture.asset(
+                                                              'assets/icons/facebook.svg'),
+                                                        ),
+                                                        Text(
+                                                          '${cubit.dependenciesModel!.data.socialMedia[0].label}',
+                                                          style: TextStyle(
+                                                              fontSize: 16.sp),
+                                                        )
+                                                      ]),
                                                 ),
-                                              ),
-                                              Text(
-                                                'LinkedIn',
-                                                style:
-                                                    TextStyle(fontSize: 16.sp),
-                                              )
-                                            ]),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: .06.sw,
+                                                vertical: .01.sh),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      appCubit.twitter =
+                                                          !appCubit.twitter;
+                                                    });
+                                                  },
+                                                  child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: Checkbox(
+                                                                value: appCubit
+                                                                    .twitter,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    appCubit.twitter =
+                                                                        !appCubit
+                                                                            .twitter;
+                                                                  });
+                                                                })),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10.0),
+                                                          child: SvgPicture.asset(
+                                                              'assets/icons/twitter.svg'),
+                                                        ),
+                                                        Text(
+                                                          '${cubit.dependenciesModel!.data.socialMedia[1].label}',
+                                                          style: TextStyle(
+                                                              fontSize: 16.sp),
+                                                        )
+                                                      ]),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: .06.sw,
+                                                vertical: .01.sh),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      appCubit.instagram =
+                                                          !appCubit.instagram;
+                                                    });
+                                                  },
+                                                  child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                            width: 20,
+                                                            height: 20,
+                                                            child: Checkbox(
+                                                                value: appCubit
+                                                                    .instagram,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    appCubit.instagram =
+                                                                        !appCubit
+                                                                            .instagram;
+                                                                  });
+                                                                })),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      10.0),
+                                                          child:
+                                                              SvgPicture.asset(
+                                                            'assets/icons/instagram.svg',
+                                                            height: 20,
+                                                            width: 20,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${cubit.dependenciesModel!.data.socialMedia[2].label}',
+                                                          style: TextStyle(
+                                                              fontSize: 16.sp),
+                                                        )
+                                                      ]),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                                    );
+                            },
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -464,19 +556,54 @@ class CompleteDataScreen extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: .05.sw, vertical: 20),
-                                child: DefaultButton(
-                                  function: () {
-                                    if (!_formKey.currentState!.validate()) {
-                                      appCubit.switchErrorMessageVisibility();
-                                    } else {
-                                      appCubit.RemoveErrorMessage();
-                                      // navigateTo(
-                                      //     context, const CompleteDataScreen());
-                                    }
-                                  },
-                                  text: 'Submit',
-                                  width: .9.sw,
-                                ),
+                                child: state is RegisterLoadingState
+                                    ? const CircularProgressIndicator(
+                                        color: Color(0xFF1DBF73),
+                                      )
+                                    : DefaultButton(
+                                        function: () {
+                                          if (!_formKey.currentState!
+                                              .validate()) {
+                                            appCubit
+                                                .switchErrorMessageVisibility();
+                                            if (appCubit.facebook == true) {
+                                              socialMedia.add('facebook');
+                                            } else if (appCubit.instagram ==
+                                                true) {
+                                              socialMedia.add('instagram');
+                                            } else if (appCubit.twitter ==
+                                                true) {
+                                              socialMedia.add('x');
+                                            }
+                                            cubit.register(
+                                                onSuccess: () {
+                                                  onSuccess(
+                                                      context: context,
+                                                      text:
+                                                          "Registered Successfully !");
+                                                  navigateAndFinish(context,
+                                                      const LoginScreen());
+                                                },
+                                                onError: () {
+                                                  onError(context: context);
+                                                },
+                                                birthDate: dateController.text,
+                                                about: aboutController.text,
+                                                salary: int.parse(
+                                                    salaryController.text),
+                                                tags: selectedTags
+                                                    .map((tag) => tag.value)
+                                                    .toList(),
+                                                socialMedia: socialMedia);
+                                          } else {
+                                            appCubit.RemoveErrorMessage();
+                                            // navigateTo(
+                                            //     context, const CompleteDataScreen());
+                                          }
+                                        },
+                                        text: 'Submit',
+                                        width: .9.sw,
+                                      ),
                               ),
                             ],
                           ),

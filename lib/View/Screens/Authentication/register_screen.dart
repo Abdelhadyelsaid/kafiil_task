@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kafiil_hiring_app/Const/constants.dart';
+import 'package:kafiil_hiring_app/Controller/API_Controller/Authentication/authentication_cubit.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
 import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_button.dart';
 import 'package:kafiil_hiring_app/View/Widgets/default_form_field.dart';
+import 'package:kafiil_hiring_app/View/Widgets/dropmenu.dart';
+import 'package:kafiil_hiring_app/helper/cache_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -40,205 +43,196 @@ class RegisterScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: BlocConsumer<AppControllerCubit, AppControllerState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            var appCubit = AppControllerCubit.get(context);
-            return Column(
-              children: [
-                Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        state is showErrorMessageState
-                            ? Padding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: .05.sw),
-                                child: SvgPicture.asset(
-                                  'assets/images/error_message.svg',
-                                  height: 40,
-                                ),
-                              )
-                            : const SizedBox(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          child: SvgPicture.asset("assets/images/register.svg"),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: .05.sw),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              defaultFormField(
-                                  width: .43.sw,
-                                  title: 'First Name',
-                                  controller: firstNameController,
-                                  type: TextInputType.text,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Enter first name !';
-                                    }
-                                  },
-                                  hint: ''),
-                              defaultFormField(
-                                  width: .43.sw,
-                                  title: 'Last Name',
-                                  controller: lastNameController,
-                                  type: TextInputType.text,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Enter last name !';
-                                    }
-                                  },
-                                  hint: ''),
-                            ],
-                          ),
-                        ),
-                        defaultFormField(
-                            title: 'Email Address',
-                            controller: emailController,
-                            type: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your Email !';
-                              }
-                            },
-                            hint: ''),
-                        defaultFormField(
-                            isPassword: appCubit.showPassword,
-                            title: 'Password',
-                            controller: passwordController,
-                            type: TextInputType.visiblePassword,
-                            suffixPressed: () {
-                              appCubit.switchPasswordVisibility();
-                            },
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter your password !';
-                              }
-                            },
-                            suffix: appCubit.showPassword
-                                ? SvgPicture.asset(
-                                    'assets/icons/hide_pass.svg',
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/icons/show_pass.svg',
-                                    width: 18,
-                                    height: 18,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+                create: (context) => AuthenticationCubit()..getDependacncies()),
+            BlocProvider(create: (context) => AppControllerCubit()),
+          ],
+          child: BlocConsumer<AppControllerCubit, AppControllerState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              var appCubit = AppControllerCubit.get(context);
+              return Column(
+                children: [
+                  Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          state is showErrorMessageState
+                              ? Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: .05.sw),
+                                  child: SvgPicture.asset(
+                                    'assets/images/error_message.svg',
+                                    height: 40,
                                   ),
-                            hint: ''),
-                        defaultFormField(
-                            isPassword: appCubit.showConfirmPassword,
-                            title: 'Confirm Password',
-                            controller: passwordConfirmController,
-                            type: TextInputType.visiblePassword,
-                            suffixPressed: () {
-                              appCubit.switchConfirmPasswordVisibility();
-                            },
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Re-enter your password !';
-                              } else if (passwordConfirmController.text !=
-                                  passwordController.text) {
-                                return 'Password mismatch';
-                              }
-                            },
-                            suffix: appCubit.showConfirmPassword
-                                ? SvgPicture.asset(
-                                    'assets/icons/hide_pass.svg',
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/icons/show_pass.svg',
-                                    width: 18,
-                                    height: 18,
-                                  ),
-                            hint: ''),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: .05.sw),
-                          child: const Row(
-                            children: [
-                              Text(
-                                'User Type',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
+                                )
+                              : const SizedBox(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            child:
+                                SvgPicture.asset("assets/images/register.svg"),
                           ),
-                        ),
-                        StatefulBuilder(
-                          builder: (context, setState) => Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: .05.sw),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  child: RadioListTile(
-                                    title: const Text('Seller'),
-                                    contentPadding: const EdgeInsets.all(0.0),
-                                    value: 2,
-                                    groupValue: appCubit.userType,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        appCubit.userType = value!;
-                                      });
+                                defaultFormField(
+                                    width: .43.sw,
+                                    title: 'First Name',
+                                    controller: firstNameController,
+                                    type: TextInputType.text,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Enter first name !';
+                                      }
                                     },
-                                  ),
-                                ),
-                                Expanded(
-                                  child: RadioListTile(
-                                    contentPadding: const EdgeInsets.all(0.0),
-                                    title: const Text('Buyer'),
-                                    value: 1,
-                                    groupValue: appCubit.userType,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        appCubit.userType = value!;
-                                      });
+                                    hint: ''),
+                                defaultFormField(
+                                    width: .43.sw,
+                                    title: 'Last Name',
+                                    controller: lastNameController,
+                                    type: TextInputType.text,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Enter last name !';
+                                      }
                                     },
-                                  ),
-                                ),
-                                Expanded(
-                                  child: RadioListTile(
-                                    contentPadding: const EdgeInsets.all(0.0),
-                                    title: const Text('Both'),
-                                    value: 3,
-                                    groupValue: appCubit.userType,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        appCubit.userType = value!;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                    hint: ''),
                               ],
                             ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: .05.sw, vertical: 20),
-                              child: DefaultButton(
-                                function: () {
-                                  if (!_formKey.currentState!.validate()) {
-                                    appCubit.switchErrorMessageVisibility();
-                                  } else {
-                                    appCubit.RemoveErrorMessage();
-                                    navigateTo(
-                                        context, const CompleteDataScreen());
-                                  }
-                                },
-                                text: 'Next',
-                                width: .43.sw,
+                          defaultFormField(
+                              title: 'Email Address',
+                              controller: emailController,
+                              type: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter your Email !';
+                                }
+                              },
+                              hint: ''),
+                          defaultFormField(
+                              isPassword: appCubit.showPassword,
+                              title: 'Password',
+                              controller: passwordController,
+                              type: TextInputType.visiblePassword,
+                              suffixPressed: () {
+                                appCubit.switchPasswordVisibility();
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter your password !';
+                                }
+                              },
+                              suffix: appCubit.showPassword
+                                  ? SvgPicture.asset(
+                                      'assets/icons/hide_pass.svg',
+                                    )
+                                  : SvgPicture.asset(
+                                      'assets/icons/show_pass.svg',
+                                      width: 18,
+                                      height: 18,
+                                    ),
+                              hint: ''),
+                          defaultFormField(
+                              isPassword: appCubit.showConfirmPassword,
+                              title: 'Confirm Password',
+                              controller: passwordConfirmController,
+                              type: TextInputType.visiblePassword,
+                              suffixPressed: () {
+                                appCubit.switchConfirmPasswordVisibility();
+                              },
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please Re-enter your password !';
+                                } else if (passwordConfirmController.text !=
+                                    passwordController.text) {
+                                  return 'Password mismatch';
+                                }
+                              },
+                              suffix: appCubit.showConfirmPassword
+                                  ? SvgPicture.asset(
+                                      'assets/icons/hide_pass.svg',
+                                    )
+                                  : SvgPicture.asset(
+                                      'assets/icons/show_pass.svg',
+                                      width: 18,
+                                      height: 18,
+                                    ),
+                              hint: ''),
+                          BlocConsumer<AuthenticationCubit,
+                              AuthenticationState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              var cubit = AuthenticationCubit.get(context);
+
+                              return StatefulBuilder(
+                                builder: (context, setState) => Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: .05.sw),
+                                    child: state is DependanciesLoadingState
+                                        ? Center(
+                                            child:
+                                                const CircularProgressIndicator())
+                                        : DropMenu(
+                                            width: .9.sw,
+                                            items: cubit.userType,
+                                            value: cubit.userTypevalue!,
+                                            title: 'User Type',
+                                            onChange: (value) {
+                                              setState(() {
+                                                cubit.userTypevalue = value;
+                                              });
+                                            },
+                                          )),
+                              );
+                            },
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: .05.sw, vertical: 20),
+                                child: DefaultButton(
+                                      function: () {
+                                        if (!_formKey.currentState!
+                                            .validate()) {
+                                          appCubit
+                                              .switchErrorMessageVisibility();
+                                        } else {
+                                          appCubit.RemoveErrorMessage();
+                                          CacheHelper.saveData(
+                                              key: 'email',
+                                              value: emailController.text);
+                                          CacheHelper.saveData(
+                                              key: 'firstName',
+                                              value: firstNameController.text);
+                                          CacheHelper.saveData(
+                                              key: 'lastName',
+                                              value: lastNameController.text);
+                                          CacheHelper.saveData(
+                                              key: 'password',
+                                              value: passwordController.text);
+                                          navigateTo(context,
+                                              const CompleteDataScreen());
+                                        }
+                                      },
+                                      text: 'Next',
+                                      width: .43.sw,
+                                    )
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ))
-              ],
-            );
-          },
+                            ],
+                          ),
+                        ],
+                      ))
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

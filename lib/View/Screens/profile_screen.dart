@@ -77,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                                                     child: Image.network(
                                                       cubit.profileModel!.data
                                                           .avatar,
-                                                      fit: BoxFit.contain,
+                                                      fit: BoxFit.cover,
                                                       width: 120.w,
                                                       height: 120.h,
                                                     ),
@@ -512,8 +512,8 @@ class ProfileScreen extends StatelessWidget {
                                                 InkWell(
                                                   onTap: () {
                                                     setState(() {
-                                                      appCubit.linkedIn =
-                                                          !appCubit.linkedIn;
+                                                      appCubit.instagram =
+                                                          !appCubit.instagram;
                                                     });
                                                   },
                                                   child: Row(
@@ -528,13 +528,13 @@ class ProfileScreen extends StatelessWidget {
                                                             height: 20,
                                                             child: Checkbox(
                                                                 value: appCubit
-                                                                    .linkedIn,
+                                                                    .instagram,
                                                                 onChanged:
                                                                     (value) {
                                                                   setState(() {
-                                                                    appCubit.linkedIn =
+                                                                    appCubit.instagram =
                                                                         !appCubit
-                                                                            .linkedIn;
+                                                                            .instagram;
                                                                   });
                                                                 })),
                                                         Padding(

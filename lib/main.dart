@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
+import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
 import 'package:kafiil_hiring_app/View/Screens/Authentication/login_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/layout_screen.dart';
 import 'package:kafiil_hiring_app/helper/cache_helper.dart';
