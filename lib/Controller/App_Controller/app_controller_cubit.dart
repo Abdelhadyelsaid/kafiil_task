@@ -1,12 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kafiil_hiring_app/View/Screens/Authentication/CompleteDataScreen.dart';
-import 'package:kafiil_hiring_app/View/Screens/Authentication/countriess_screen.dart';
-import 'package:kafiil_hiring_app/View/Screens/Authentication/login_screen.dart';
+import 'package:kafiil_hiring_app/View/Screens/countriess_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/profile_screen.dart';
 import 'package:kafiil_hiring_app/View/Screens/services_screen.dart';
-import 'package:meta/meta.dart';
 
 part 'app_controller_state.dart';
 
