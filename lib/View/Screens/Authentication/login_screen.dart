@@ -160,8 +160,13 @@ class LoginScreen extends StatelessWidget {
                                                       context: context,
                                                       text:
                                                           "Log in Successfully !");
-                                                  navigateAndFinish(context,
-                                                      const LayoutScreen());
+                                                  if(appCubit.rememberMe==true){
+                                                    navigateAndFinish(context,
+                                                        const LayoutScreen());
+                                                  }
+                                                  else{
+                                                    navigateTo(context,const LayoutScreen());
+                                                  }
                                                 },
                                                 onError: () {
                                                   onError(context: context);

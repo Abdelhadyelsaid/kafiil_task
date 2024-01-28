@@ -10,7 +10,7 @@ class DioHelper {
     debugPrint('dio helper run');
     dio = Dio(BaseOptions(
       validateStatus: (_) => true,
-      baseUrl:ApiUrl.baseUrl,
+      baseUrl: ApiUrl.baseUrl,
       receiveDataWhenStatusError: true,
     ));
   }
@@ -48,6 +48,37 @@ class DioHelper {
     });
   }
 
+  static Future<Response> registerRequest({
+    bool containImage = false,
+    bool isJsonContentType = true,
+    required String url,
+    required FormData data,
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    dio!.options.headers = {
+      'Accept': 'application/json',
+      'Accept-Language': 'ar',
+      'Content-Type': 'multipart/form-data'
+    };
+    print("This is data:$data");
+    return dio!
+        .post(
+      url,
+      data: data,
+      queryParameters: query,
+      options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          }),
+    )
+        .catchError((error) {
+      print(error.toString());
+    });
+  }
+
   static Future<Response> getData({
     required String url,
     Map<String, dynamic>? query,
@@ -73,6 +104,7 @@ class DioHelper {
       print(error.toString());
     });
   }
+
   static Future<Response> putData({
     required String url,
     Map<String, dynamic>? query,
@@ -94,7 +126,6 @@ class DioHelper {
             return status! < 500;
           }),
     )
-        .catchError((error) {
-    });
+        .catchError((error) {});
   }
 }

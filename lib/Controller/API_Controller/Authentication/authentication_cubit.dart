@@ -62,9 +62,12 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       print(e.toString());
     });
   }
+
   void register({
+    required BuildContext context,
     Function()? onError,
     Function()? onSuccess,
+    required String genderInRegister,
     required String birthDate,
     required String about,
     required int salary,
@@ -82,32 +85,41 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       'password': CacheHelper.getData(key: 'password'),
       'email': CacheHelper.getData(key: 'email'),
       'birth_date': birthDate,
-      'gender': gender,
-      'type': userTypevalue,
+      'gender': genderInRegister == 'Male' ? 0 : 1,
+      'type': userTypevalue == 'buyer'
+          ? 1
+          : userTypevalue == 'seller'
+              ? 2
+              : userTypevalue == 'both'
+                  ? 3
+                  : 1,
       'password_confirmation': CacheHelper.getData(key: 'password'),
     };
     FormData formData = FormData.fromMap(data);
     formData.files.add(
         MapEntry('avatar', await MultipartFile.fromFile(avatarFile!.path)));
-    Dio dio = Dio();
     emit(RegisterLoadingState());
-    try {
-      Response response = await dio.post(
-          'https://test.kafiil.com/api/test/user/register',
-          data: formData);
-      if (response.statusCode == 200) {
-        print(response.data);
+    DioHelper.registerRequest(
+            url: 'https://test.kafiil.com/api/test/user/register',
+            data: formData)
+        .then((value) {
+      print(value.data);
+      if (value.statusCode == 200) {
         print("Register success");
         onSuccess!();
       } else {
-        print('Request failed with status: ${response.statusCode}');
-        print(response.data);
-        onError!();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(value.data['errors'].toString()),
+          backgroundColor: Colors.red,
+        ));
+        // onError!();
       }
       emit(RegisterSuccessState());
-    } catch (e) {
-      print('Error: $e');
-    }
+    }).catchError((e) {
+      emit(RegisterErrorState());
+
+      print(e.toString());
+    });
   }
 
   ProfileModel? profileModel;
@@ -120,6 +132,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   var salaryController = TextEditingController();
   int profileUserType = 1;
   int gender = 0;
+  List<String> selectedTags = [];
 
   void getProfile({
     Function()? onError,
@@ -139,6 +152,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         passwordController.text = "************";
         profileUserType = profileModel!.data.type.code;
         gender = profileModel!.data.gender;
+        for (int i = 0; i < profileModel!.data.tags.length; i++) {
+          selectedTags.add(profileModel!.data.tags[i].name);
+        }
         print("get Profile success");
         onSuccess!();
       } else {
@@ -153,9 +169,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   DependenciesModel? dependenciesModel;
 
-  late final items;
-  List<String> userType=[];
-  String? userTypevalue='buyer';
+  List<MultiSelectItem<DependTags>> items = [];
+  List<String> userType = [];
+  String? userTypevalue = 'buyer';
 
   void getDependacncies({
     Function()? onError,
@@ -169,7 +185,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         items = dependenciesModel!.data.tags
             .map((tag) => MultiSelectItem<DependTags>(tag, tag.label))
             .toList();
-        for(int i=0;i<dependenciesModel!.data.types.length;i++){
+        for (int i = 0; i < dependenciesModel!.data.types.length; i++) {
           userType.add(dependenciesModel!.data.types[i].label);
         }
 

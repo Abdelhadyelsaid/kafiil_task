@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:kafiil_hiring_app/Const/constants.dart';
 import 'package:kafiil_hiring_app/Controller/API_Controller/Authentication/authentication_cubit.dart';
 import 'package:kafiil_hiring_app/Controller/App_Controller/app_controller_cubit.dart';
@@ -224,15 +225,17 @@ class CompleteDataScreen extends StatelessWidget {
                                   final DateTime? dateTime =
                                       await showDatePicker(
                                           context: context,
-                                          initialDate: DateTime.now(),
+                                          initialDate: DateTime(2018),
                                           firstDate: DateTime(1900),
-                                          lastDate: DateTime(2045));
+                                          lastDate: DateTime(2018));
                                   if (dateTime != null) {
                                     setState(() {
+                                      var formatter = DateFormat('yyyy-MM-dd');
                                       var formattedDate =
-                                          "${dateTime.day}-${dateTime.month}-${dateTime.year}";
+                                          formatter.format(dateTime);
                                       dateController.text =
                                           formattedDate.toString();
+                                      print(dateController.text);
                                     });
                                   }
                                 },
@@ -308,7 +311,7 @@ class CompleteDataScreen extends StatelessWidget {
                             builder: (context, state) {
                               var getcubit = AuthenticationCubit.get(context);
                               return getcubit.dependenciesModel == null
-                                  ? CircularProgressIndicator()
+                                  ? const CircularProgressIndicator()
                                   : Padding(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: .05.sw),
@@ -327,7 +330,7 @@ class CompleteDataScreen extends StatelessWidget {
                                                 listType:
                                                     MultiSelectListType.CHIP,
                                                 searchable: true,
-                                                title: Text("Skills"),
+                                                title: const Text("Skills"),
                                                 items: getcubit.items,
                                                 onConfirm: (values) {
                                                   selectedTags = values;
@@ -351,7 +354,7 @@ class CompleteDataScreen extends StatelessWidget {
                                     );
                             },
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: .05.sw),
                             child: const Row(
@@ -369,7 +372,7 @@ class CompleteDataScreen extends StatelessWidget {
                             builder: (context, state) {
                               var getcubit = AuthenticationCubit.get(context);
                               return getcubit.dependenciesModel == null
-                                  ? CircularProgressIndicator()
+                                  ? const CircularProgressIndicator()
                                   : StatefulBuilder(
                                       builder: (context, setState) => Column(
                                         children: [
@@ -556,54 +559,59 @@ class CompleteDataScreen extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: .05.sw, vertical: 20),
-                                child: state is RegisterLoadingState
-                                    ? const CircularProgressIndicator(
-                                        color: Color(0xFF1DBF73),
-                                      )
-                                    : DefaultButton(
-                                        function: () {
-                                          if (!_formKey.currentState!
-                                              .validate()) {
-                                            appCubit
-                                                .switchErrorMessageVisibility();
-                                            if (appCubit.facebook == true) {
-                                              socialMedia.add('facebook');
-                                            } else if (appCubit.instagram ==
-                                                true) {
-                                              socialMedia.add('instagram');
-                                            } else if (appCubit.twitter ==
-                                                true) {
-                                              socialMedia.add('x');
-                                            }
-                                            cubit.register(
-                                                onSuccess: () {
-                                                  onSuccess(
-                                                      context: context,
-                                                      text:
-                                                          "Registered Successfully !");
-                                                  navigateAndFinish(context,
-                                                      const LoginScreen());
-                                                },
-                                                onError: () {
-                                                  onError(context: context);
-                                                },
-                                                birthDate: dateController.text,
-                                                about: aboutController.text,
-                                                salary: int.parse(
-                                                    salaryController.text),
-                                                tags: selectedTags
-                                                    .map((tag) => tag.value)
-                                                    .toList(),
-                                                socialMedia: socialMedia);
-                                          } else {
-                                            appCubit.RemoveErrorMessage();
-                                            // navigateTo(
-                                            //     context, const CompleteDataScreen());
-                                          }
-                                        },
-                                        text: 'Submit',
-                                        width: .9.sw,
-                                      ),
+                                child: BlocConsumer<AuthenticationCubit,
+                                    AuthenticationState>(
+                                  listener: (context, state) {},
+                                  builder: (context, state) {
+                                    return state is RegisterLoadingState
+                                        ? const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xFF1DBF73),
+                                            ),
+                                          )
+                                        : DefaultButton(
+                                            function: () {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                if (appCubit.facebook == true) {
+                                                  socialMedia.add('facebook');
+                                                } else if (appCubit.instagram ==
+                                                    true) {
+                                                  socialMedia.add('instagram');
+                                                } else if (appCubit.twitter ==
+                                                    true) {
+                                                  socialMedia.add('x');
+                                                }
+                                                cubit.register(
+                                                    onSuccess: () {
+                                                      onSuccess(
+                                                          context: context,
+                                                          text:
+                                                              "Registered Successfully !");
+                                                      navigateAndFinish(context,
+                                                          const LoginScreen());
+                                                    },
+                                                    onError: () {
+                                                      onError(context: context);
+                                                    },
+                                                    birthDate:
+                                                        dateController.text,
+                                                    about: aboutController.text,
+                                                    salary: salary,
+                                                    tags: selectedTags
+                                                        .map((tag) => tag.value)
+                                                        .toList(),
+                                                    socialMedia: socialMedia,
+                                                    context: context, genderInRegister: appCubit.gender);
+                                              } else {
+                                                appCubit.RemoveErrorMessage();
+                                              }
+                                            },
+                                            text: 'Submit',
+                                            width: .9.sw,
+                                          );
+                                  },
+                                ),
                               ),
                             ],
                           ),

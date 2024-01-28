@@ -44,16 +44,16 @@ class Data {
   late final String avatar;
 
   Data.fromJson(Map<String, dynamic> json){
-    id = json['id'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    about = json['about'];
+    id = json['id']??0;
+    firstName = json['first_name']??'';
+    lastName = json['last_name']??"";
+    about = json['about']??"";
     tags = List.from(json['tags']).map((e)=>Tags.fromJson(e)).toList();
     favoriteSocialMedia = List.castFrom<dynamic, String>(json['favorite_social_media']);
-    salary = json['salary'];
-    email = json['email'];
-    birthDate = json['birth_date'];
-    gender = json['gender'];
+    salary = json['salary']??100;
+    email = json['email']??'';
+    birthDate = json['birth_date']??"";
+    gender = json['gender']??0;
     type = Type.fromJson(json['type']);
     avatar = json['avatar'];
   }
@@ -68,8 +68,8 @@ class Tags {
   late final String name;
 
   Tags.fromJson(Map<String, dynamic> json){
-    id = json['id'];
-    name = json['name'];
+    id = json['id']??0;
+    name = json['name']??'';
   }
 
 }
@@ -85,8 +85,8 @@ class Type {
   late final String niceName;
 
   Type.fromJson(Map<String, dynamic> json){
-    code = json['code'];
-    name = json['name'];
-    niceName = json['nice_name'];
+    code = json['code']??0;
+    name = json['name']??'';
+    niceName = json['nice_name']??"";
   }
 }

@@ -20,7 +20,7 @@ void onSuccess({
 void onError({
   required BuildContext context,
 }) {
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  ScaffoldMessenger.of(context).showSnackBar( SnackBar(
     content: Text("Something went wrong!"),
     backgroundColor: Colors.red,
   ));

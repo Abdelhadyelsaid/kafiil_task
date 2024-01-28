@@ -87,6 +87,8 @@ class RegisterScreen extends StatelessWidget {
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return 'Enter first name !';
+                                      }else if (value.length>50) {
+                                        return 'Name too long !';
                                       }
                                     },
                                     hint: ''),
@@ -98,6 +100,9 @@ class RegisterScreen extends StatelessWidget {
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return 'Enter last name !';
+                                      }
+                                      else if (value.length>50) {
+                                        return 'Name too long !';
                                       }
                                     },
                                     hint: ''),
@@ -112,6 +117,9 @@ class RegisterScreen extends StatelessWidget {
                                 if (value!.isEmpty) {
                                   return 'Please enter your Email !';
                                 }
+                                else if (value.length>50) {
+                                  return 'Email is too long !';
+                                }
                               },
                               hint: ''),
                           defaultFormField(
@@ -125,6 +133,9 @@ class RegisterScreen extends StatelessWidget {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Please enter your password !';
+                                }
+                                else  if (value.length<8) {
+                                  return 'Password is too short!';
                                 }
                               },
                               suffix: appCubit.showPassword

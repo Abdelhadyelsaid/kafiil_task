@@ -28,7 +28,9 @@ class ProfileScreen extends StatelessWidget {
           providers: [
             BlocProvider(create: (context) => AppControllerCubit()),
             BlocProvider(
-                create: (context) => AuthenticationCubit()..getProfile()),
+                create: (context) => AuthenticationCubit()
+                  ..getProfile()
+                  ..getDependacncies()),
           ],
           child: BlocConsumer<AppControllerCubit, AppControllerState>(
             listener: (context, state) {},
@@ -38,7 +40,8 @@ class ProfileScreen extends StatelessWidget {
                 listener: (context, state) {},
                 builder: (context, state) {
                   var cubit = AuthenticationCubit.get(context);
-                  return cubit.profileModel == null
+                  return cubit.profileModel == null ||
+                          cubit.dependenciesModel == null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,7 +71,8 @@ class ProfileScreen extends StatelessWidget {
                                           decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
                                           ),
-                                          child: cubit.profileModel != null &&cubit.image==null
+                                          child: cubit.profileModel != null &&
+                                                  cubit.image == null
                                               ? Stack(children: [
                                                   Card(
                                                     clipBehavior:
@@ -374,6 +378,49 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.symmetric(
+                                          horizontal: .05.sw, vertical: .01.sh),
+                                      child: const Row(
+                                        children: [
+                                          Text(
+                                            'Skills',
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: .9.sw,
+                                        decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius:
+                                        BorderRadius.circular(14),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Wrap(
+                                          spacing: 8.0,
+                                          children: cubit.selectedTags
+                                              .map((tag) =>
+                                                  Chip(label: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Text(tag,style: TextStyle(color: const Color(0xFF1DBF73)),),
+                                                      Icon(Icons.close,color: const Color(0xFF1DBF73),)
+                                                    ],
+                                                  )))
+                                              .toList(),
+                                        ),
+                                      )
+                                    ],
+                                        ),
+                                      ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
                                           horizontal: .05.sw),
                                       child: const Row(
                                         children: [
@@ -415,8 +462,15 @@ class ProfileScreen extends StatelessWidget {
                                                             width: 20,
                                                             height: 20,
                                                             child: Checkbox(
-                                                                value: appCubit
-                                                                    .facebook,
+                                                                value: cubit
+                                                                        .profileModel!
+                                                                        .data
+                                                                        .favoriteSocialMedia
+                                                                        .contains(
+                                                                            'facebook')
+                                                                    ? true
+                                                                    : appCubit
+                                                                        .facebook,
                                                                 onChanged:
                                                                     (value) {
                                                                   setState(() {
@@ -435,7 +489,7 @@ class ProfileScreen extends StatelessWidget {
                                                               'assets/icons/facebook.svg'),
                                                         ),
                                                         Text(
-                                                          'Facebook',
+                                                          'facebook',
                                                           style: TextStyle(
                                                               fontSize: 16.sp),
                                                         )
@@ -471,8 +525,15 @@ class ProfileScreen extends StatelessWidget {
                                                             width: 20,
                                                             height: 20,
                                                             child: Checkbox(
-                                                                value: appCubit
-                                                                    .twitter,
+                                                                value: cubit
+                                                                        .profileModel!
+                                                                        .data
+                                                                        .favoriteSocialMedia
+                                                                        .contains(
+                                                                            'x')
+                                                                    ? true
+                                                                    : appCubit
+                                                                        .twitter,
                                                                 onChanged:
                                                                     (value) {
                                                                   setState(() {
@@ -491,7 +552,7 @@ class ProfileScreen extends StatelessWidget {
                                                               'assets/icons/twitter.svg'),
                                                         ),
                                                         Text(
-                                                          'Twitter',
+                                                          'x',
                                                           style: TextStyle(
                                                               fontSize: 16.sp),
                                                         )
@@ -527,8 +588,15 @@ class ProfileScreen extends StatelessWidget {
                                                             width: 20,
                                                             height: 20,
                                                             child: Checkbox(
-                                                                value: appCubit
-                                                                    .instagram,
+                                                                value: cubit
+                                                                        .profileModel!
+                                                                        .data
+                                                                        .favoriteSocialMedia
+                                                                        .contains(
+                                                                            'instagram')
+                                                                    ? true
+                                                                    : appCubit
+                                                                        .instagram,
                                                                 onChanged:
                                                                     (value) {
                                                                   setState(() {
@@ -545,13 +613,13 @@ class ProfileScreen extends StatelessWidget {
                                                                       10.0),
                                                           child:
                                                               SvgPicture.asset(
-                                                            'assets/icons/LinkedIn_icon.svg',
+                                                            'assets/icons/instagram.svg',
                                                             height: 21,
                                                             width: 19,
                                                           ),
                                                         ),
                                                         Text(
-                                                          'LinkedIn',
+                                                          'instagram',
                                                           style: TextStyle(
                                                               fontSize: 16.sp),
                                                         )
